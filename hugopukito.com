@@ -3,13 +3,16 @@ map $http_upgrade $connection_upgrade {
   '' close;
 }
 
+limit_req_zone $binary_remote_addr zone=limitreqsbyaddr:20m rate=100r/s;
+limit_req_status 429;
+
 server {
   listen 80;
   server_name hugopukito.com www.hugopukito.com;
   return 301 https://$server_name$request_uri;
 }
 
-server {
+server {  
   listen 443 ssl http2;
   server_name hugopukito.com www.hugopukito.com;
 
@@ -47,6 +50,7 @@ server {
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto https;
+    limit_req zone=limitreqsbyaddr;
   }
 
   error_page 500 502 503 504 /50x.html;
