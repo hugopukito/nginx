@@ -20,8 +20,11 @@ server {
   ssl_certificate_key /etc/letsencrypt/live/hugopukito.com/privkey.pem;
 
   root /home/pukito/frontWeb/dist;
-  index index.html;
-  try_files $uri $uri/ /index.html;
+ 
+  location / {
+    index index.html;
+    try_files $uri $uri/ /index.html;
+  }
 
   location /grafana/ {
     proxy_pass http://localhost:3000/;
