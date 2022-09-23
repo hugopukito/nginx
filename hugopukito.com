@@ -3,7 +3,7 @@ map $http_upgrade $connection_upgrade {
   '' close;
 }
 
-limit_req_zone $binary_remote_addr zone=limitreqsbyaddr:20m rate=100r/s;
+limit_req_zone $binary_remote_addr zone=limitreqsbyaddr:20m rate=1000r/s;
 limit_req_status 429;
 
 server {
@@ -20,8 +20,12 @@ server {
   ssl_certificate_key /etc/letsencrypt/live/hugopukito.com/privkey.pem;
 
   root /home/pukito/frontWeb/dist;
-  index index.html;
-  try_files $uri $uri/ /index.html;
+  
+  location = / {
+    limit_req zone=limitreqsbyaddr;
+    index index.html;
+    try_files $uri $uri/ /index.html;
+  }
 
   location /grafana/ {
     proxy_pass http://localhost:3000/;
