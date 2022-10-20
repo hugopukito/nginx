@@ -20,11 +20,11 @@ server {
   ssl_certificate_key /etc/letsencrypt/live/hugopukito.com/privkey.pem;
 
   root /home/pukito/frontWeb/dist;
+  index index.html;
+  try_files $uri $uri/ /index.html;
   
   location = / {
     limit_req zone=limitreqsbyaddr;
-    index index.html;
-    try_files $uri $uri/ /index.html;
   }
 
   location /grafana/ {
@@ -55,6 +55,14 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto https;
     limit_req zone=limitreqsbyaddr;
+  }
+
+  location /api/websocket {
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header Host $http_host;
+    proxy_set_header Upgrade websocket;
+    proxy_set_header Connection Upgrade;
+    proxy_pass http://127.0.0.1:8080/websocket;
   }
 
   error_page 500 502 503 504 /50x.html;
