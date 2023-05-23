@@ -34,22 +34,12 @@ server {
 
   location /cv {
     alias /home/pukito/cv/cv.pdf;
-    types { application/pdf pdf; }
-    add_header Content-Disposition "inline";
-    add_header Content-Type "application/pdf";
-    add_header Cache-Control "public";
-    add_header Pragma "public";
-    add_header Expires "0";
+    default_type application.pdf;
   }
 
   location /cv-english {
     alias /home/pukito/cv/cv-english.pdf;
-    types { application/pdf pdf; } 
-    add_header Content-Disposition "inline";
-    add_header Content-Type "application/pdf";
-    add_header Cache-Control "public";
-    add_header Pragma "public";
-    add_header Expires "0";
+    default_type application.pdf;
   }
 
   location /grafana/ {
