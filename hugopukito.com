@@ -19,7 +19,7 @@ server {
   ssl_certificate /etc/letsencrypt/live/hugopukito.com/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/hugopukito.com/privkey.pem;
 
-  root /home/pukito/frontWeb/dist;
+  root /home/pukito/front-vuejs/dist;
   index index.html;
   try_files $uri $uri/ /index.html;
   
@@ -30,6 +30,26 @@ server {
   location /portfolio {
     root /home/pukito;
     try_files $uri /portfolio/index.html;
+  }
+
+  location /cv {
+    alias /home/pukito/cv/cv.pdf;
+    types { application/pdf pdf; }
+    add_header Content-Disposition "inline";
+    add_header Content-Type "application/pdf";
+    add_header Cache-Control "public";
+    add_header Pragma "public";
+    add_header Expires "0";
+  }
+
+  location /cv-english {
+    alias /home/pukito/cv/cv-english.pdf;
+    types { application/pdf pdf; } 
+    add_header Content-Disposition "inline";
+    add_header Content-Type "application/pdf";
+    add_header Cache-Control "public";
+    add_header Pragma "public";
+    add_header Expires "0";
   }
 
   location /grafana/ {
@@ -62,12 +82,20 @@ server {
     limit_req zone=limitreqsbyaddr;
   }
 
-  location /api/websocket {
+  location /api/chat {
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header Host $http_host;
     proxy_set_header Upgrade websocket;
     proxy_set_header Connection Upgrade;
-    proxy_pass http://127.0.0.1:8080/websocket;
+    proxy_pass http://127.0.0.1:8080/chat;
+  }
+
+  location /api/game {
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header Host $http_host;
+    proxy_set_header Upgrade websocket;
+    proxy_set_header Connection Upgrade;
+    proxy_pass http://127.0.0.1:8080/game;
   }
 
   error_page 500 502 503 504 /50x.html;
